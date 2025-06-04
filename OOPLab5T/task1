@@ -1,0 +1,97 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// ======= КЛАС Point =======
+class Point {
+protected:
+    double x, y;
+
+public:
+    // Конструктор за замовчуванням
+    Point() : x(0), y(0) {}
+
+    // Конструктор з параметрами
+    Point(double x, double y) : x(x), y(y) {}
+
+    // Конструктор копіювання
+    Point(const Point& p) : x(p.x), y(p.y) {}
+
+    // Деструктор
+    virtual ~Point() {}
+
+    // Метод для введення координат
+    void Input() {
+        cout << "Введіть координати x і y: ";
+        cin >> x >> y;
+    }
+
+    // Метод друку координат
+    virtual void Print() const {
+        cout << "Точка: (" << x << ", " << y << ")\n";
+    }
+
+    // Метод для встановлення нових координат
+    void SetCoords(double nx, double ny) {
+        x = nx;
+        y = ny;
+    }
+};
+
+// ======= КЛАС ColoredPoint =======
+class ColoredPoint : public Point {
+private:
+    string color;
+
+public:
+    // Конструктор за замовчуванням
+    ColoredPoint() : Point(), color("чорний") {}
+
+    // Конструктор з параметрами
+    ColoredPoint(double x, double y, string c) : Point(x, y), color(c) {}
+
+    // Конструктор копіювання
+    ColoredPoint(const ColoredPoint& cp) : Point(cp), color(cp.color) {}
+
+    // Деструктор
+    ~ColoredPoint() {}
+
+    // Метод введення координат і кольору
+    void Input() {
+        Point::Input();
+        cout << "Введіть колір: ";
+        cin >> color;
+    }
+
+    // Метод друку
+    void Print() const override {
+        cout << "Кольорова точка: (" << x << ", " << y << "), колір: " << color << "\n";
+    }
+
+    // Метод встановлення нових координат і кольору
+    void SetAll(double nx, double ny, string c) {
+        SetCoords(nx, ny);
+        color = c;
+    }
+
+    void SetColor(string c) {
+        color = c;
+    }
+};
+
+// ======= ТЕСТУВАННЯ =======
+int main() {
+    setlocale(LC_ALL, "ukr");
+
+    cout << "Створення кольорової точки з введенням:\n";
+    ColoredPoint cp1;
+    cp1.Input();
+
+    cout << "\nВивід кольорової точки:\n";
+    cp1.Print();
+
+    cout << "\nСтворення кольорової точки через конструктор:\n";
+    ColoredPoint cp2(5.5, -2.0, "синій");
+    cp2.Print();
+    return 0;
+}
