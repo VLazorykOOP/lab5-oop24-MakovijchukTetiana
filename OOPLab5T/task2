@@ -1,0 +1,98 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// Клас процесор
+class Processor {
+private:
+    int frequency; // потужність у МГц
+
+public:
+    Processor() : frequency(0) {}
+    Processor(int freq) : frequency(freq) {}
+
+    void setFrequency(int freq) { frequency = freq; }
+    int getFrequency() const { return frequency; }
+    void print() const {
+        cout << "Процесор: " << frequency << " МГц" << endl;
+    }
+};
+
+// Клас комп'ютер
+class Computer {
+protected:
+    Processor proc;
+    string* brand;
+    double price;
+
+public:
+    Computer() : brand(new string("Невідомо")), price(0.0) {}
+    Computer(int freq, const string& br, double pr) : proc(freq), brand(new string(br)), price(pr) {}
+    Computer(const Computer& other) : proc(other.proc), brand(new string(*other.brand)), price(other.price) {}
+
+    virtual ~Computer() { delete brand; }
+
+    virtual void print() const {
+        cout << "Комп'ютер марки " << *brand << ", ціна: " << price << " грн\n";
+        proc.print();
+    }
+};
+
+// Публічний похідний клас комп'ютерів з монітором
+class PublicMonitorComputer : public Computer {
+private:
+    double monitorSize;
+
+public:
+    PublicMonitorComputer() : Computer(), monitorSize(0.0) {}
+    PublicMonitorComputer(int freq, const string& br, double pr, double size)
+        : Computer(freq, br, pr), monitorSize(size) {}
+
+    ~PublicMonitorComputer() override {}
+
+    void print() const override {
+        Computer::print();
+        cout << "Розмір монітора: " << monitorSize << " дюймів\n";
+    }
+};
+
+// Приватний похідний клас комп'ютерів з монітором
+class PrivateMonitorComputer : private Computer {
+private:
+    double monitorSize;
+
+public:
+    PrivateMonitorComputer() : Computer(), monitorSize(0.0) {}
+    PrivateMonitorComputer(int freq, const string& br, double pr, double size)
+        : Computer(freq, br, pr), monitorSize(size) {}
+
+    ~PrivateMonitorComputer() override {}
+
+    void hiddenPrint() const {
+        Computer::print();
+        cout << "Розмір монітора: " << monitorSize << " дюймів\n";
+    }
+};
+
+int main() {
+    int freq;
+    string brand;
+    double price, size;
+
+    cout << "Введіть частоту процесора (МГц): ";
+    cin >> freq;
+    cout << "Введіть марку комп'ютера: ";
+    cin >> brand;
+    cout << "Введіть ціну комп'ютера: ";
+    cin >> price;
+    cout << "Введіть розмір монітора: ";
+    cin >> size;
+
+    PublicMonitorComputer pc1(freq, brand, price, size);
+    cout << "\nІнформація про комп'ютер:" << endl;
+    pc1.print();
+
+    PrivateMonitorComputer pc2(freq, brand, price, size); // існує, але не виводиться
+
+    return 0;
+}
